@@ -7,6 +7,9 @@ for output in manifest['outputs']:
  assert hashlib.sha256(data).hexdigest()==output['sha256'] and len(data)==output['bytes']
 for edition in ['chatgpt','claude','gemini']:
  name='skill-switchboard-'+edition
+ shipped=root/edition/f'{name}.zip'
+ if shipped.exists():
+  assert shipped.read_bytes()==(root/'dist'/f'{name}.zip').read_bytes(), 'Committed bundle is stale: run npm run package'
  with zipfile.ZipFile(root/'dist'/f'{name}.zip') as z:
   assert z.testzip() is None
   assert len(z.namelist())==5

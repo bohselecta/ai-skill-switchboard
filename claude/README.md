@@ -28,6 +28,16 @@ without shuffling your entire grid. All external actions remain yours.
 *Actual browser capture with labeled fictional tasks. The sculpture above is
 AI-generated editorial art, not a promised native Claude interface.*
 
+## Try it without installing anything
+
+[**Download the app + instruction bundle**](https://github.com/bohselecta/ai-skill-switchboard/raw/refs/heads/main/claude/skill-switchboard-claude.zip)
+
+Unzip the download and open `skill-switchboard-claude/references/companion.html`
+in your browser. The complete app and artwork are included. Start with the labeled
+sample board; no account connection or API setup is needed. Keep private backups,
+especially when using a downloaded file. The same ZIP can be used for the optional
+provider skill installation described below.
+
 ## Requirements
 
 Modern browser; Node.js 22+ for the local server or builds. No runtime dependencies,

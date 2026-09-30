@@ -180,10 +180,10 @@ with sync_playwright() as pw:
                 expect(page.locator('#dialog-title')).to_have_text('<img src=x onerror=alert(1)>')
                 assert page.locator('#dialog img').count()==0;assert '<img' in page.locator('#dialog-title').inner_text();close(page)
                 before=page.evaluate("localStorage.getItem('skill-switchboard:chatgpt:v1')")
-                page.evaluate("window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException('quota','QuotaExceededError')}")
+                page.evaluate("() => { window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException('quota','QuotaExceededError')}; }")
                 click(page,'capture');f=page.locator('form[data-form="capture"]');f.locator('[name="title"]').fill('Quota recovery');f.locator('[name="body"]').fill('Please reply without losing existing work.');f.get_by_role('button',name='Capture & route').click()
                 expect(page.locator('#dialog .dialog-message')).to_contain_text('could not save');assert before==page.evaluate("localStorage.getItem('skill-switchboard:chatgpt:v1')")
-                page.evaluate('Storage.prototype.setItem=window.originalSet');close(page)
+                page.evaluate('() => { Storage.prototype.setItem=window.originalSet; }');close(page)
             record('security: escaped hostile content and failed-save recovery',malicious_and_quota)
             context.close()
             def api_ui():

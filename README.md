@@ -55,6 +55,17 @@ runtime package dependencies** and no `npm install` step for normal use. Optiona
 provider drafting needs your own API entitlement, server-side key, and model ID.
 Browser testing additionally uses Python 3.10+ and pinned Playwright.
 
+## Try a ready-to-use bundle
+
+[**ChatGPT download**](https://github.com/bohselecta/ai-skill-switchboard/raw/refs/heads/main/chatgpt/skill-switchboard-chatgpt.zip) ·
+[**Claude download**](https://github.com/bohselecta/ai-skill-switchboard/raw/refs/heads/main/claude/skill-switchboard-claude.zip) ·
+[**Gemini download**](https://github.com/bohselecta/ai-skill-switchboard/raw/refs/heads/main/gemini/skill-switchboard-gemini.zip)
+
+Unzip your edition and open its `references/companion.html`. No terminal, account
+connection, or API key is needed. The ZIP includes the complete app, generated art,
+reusable skill instructions, and license. For more predictable persistence, use the
+local-server setup below. Export backups before closing or moving a file workspace.
+
 ## Get started
 
 ```bash
@@ -129,6 +140,9 @@ browser paths across all three editions. Provider responses in tests are fixture
 not live paid calls. Browser reports and captures are attached to Actions runs.
 See `docs/verification.json` for the checked source when present. Neither software
 tests nor beautiful imagery establish model quality or participant benefit.
+
+After code or bundled-instruction changes, run `npm run package` and commit the
+three refreshed edition ZIPs; CI rejects stale committed bundles.
 
 Keep contributions bounded, reversible, and consistent with [AGENTS.md](AGENTS.md).
 Use synthetic examples in issues. Do not submit personal task content or secrets.
