@@ -25,13 +25,13 @@ jobs:
               assert current == before, 'Unexpected concurrent source change'
               s=p.read_text()
               for old,new in changes:
-                  assert s.count(old)==1
+                  assert s.count(old)==1, repr(old)
                   s=s.replace(old,new)
               p.write_text(s)
               assert hashlib.sha256(p.read_bytes()).hexdigest()==after
-          patch('tests/browser.py','b976aa6995ed0cef7ac8a5a2c3b4500eefb9b17e994fee616c5c688c19e6e06c','c5ad5f296317afe5906f4aabd10715ad1fb50665d9d9625473526cd8a7795161',[
+          patch('tests/browser.py','b976aa6995ed0cef7ac8a5a2c3b4500eefb9b17e994fee616c5c688c19e6e06c','a5c7dd27f926833fb2be268a62f6de32fdd2370964b7cc0c5ec1cd22ee1ea320',[
               ('page.evaluate("window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException(\'quota\',\'QuotaExceededError\')}")','page.evaluate("() => { window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException(\'quota\',\'QuotaExceededError\')}; }")'),
-              ('page.evaluate("Storage.prototype.setItem=window.originalSet")','page.evaluate("() => { Storage.prototype.setItem=window.originalSet; }")')
+              ("page.evaluate('Storage.prototype.setItem=window.originalSet')","page.evaluate('() => { Storage.prototype.setItem=window.originalSet; }')")
           ])
           patch('scripts/check-bundles.py','40020d1a975d0f1bcf6fd3b9af830ea9309c9e7d789f513992ed725470fba5dc','163df5b2e3d7b0df8f34989562afd169af5e0a0b2c0805fab0faecab1271becb',[
               (" name='skill-switchboard-'+edition\n"," name='skill-switchboard-'+edition\n shipped=root/edition/f'{name}.zip'\n if shipped.exists():\n  assert shipped.read_bytes()==(root/'dist'/f'{name}.zip').read_bytes(), 'Committed bundle is stale: run npm run package'\n")
