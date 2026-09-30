@@ -1,0 +1,12 @@
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema",
+ "title":"Skill Switchboard draft result v1",
+ "type":"object",
+ "required":["summary","draft","questions"],
+ "additionalProperties":false,
+ "properties":{
+  "summary":{"type":"string","maxLength":1500},
+  "draft":{"type":"string","minLength":1,"maxLength":24000},
+  "questions":{"type":"array","maxItems":10,"items":{"type":"string","minLength":1,"maxLength":500}}
+ }
+}
