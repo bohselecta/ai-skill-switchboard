@@ -100,8 +100,7 @@ with sync_playwright() as pw:
                 # Either real clipboard or a visible manual fallback is acceptable.
                 if page.get_by_role('textbox',name='Text to copy').count():
                     assert len(page.get_by_role('textbox',name='Text to copy').input_value())>300
-                    close(page);click(page,'view','inbox');page.get_by_role('button',name='Email reply for the new project',exact=False).click()
-                else:click(page,'task',page.locator('[data-action="task"]').filter(visible=True).first.get_attribute('data-id'))
+                page.locator('#dialog').get_by_role('button',name='Back to task',exact=True).click()
                 expect(page.locator('#dialog .status-pill')).to_have_text('Waiting for a draft')
                 # Invalid response does not clear source or mark anything finished.
                 form=page.locator('form[data-form="result"]');form.locator('textarea').fill('{"draft":')
