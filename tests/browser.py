@@ -98,7 +98,7 @@ with sync_playwright() as pw:
                 assert 'People notes' not in page.get_by_role('textbox',name='Prepared request').input_value()
                 click(page,'copy-request')
                 # Wait for clipboard settlement before using the dialog's return control.
-                page.wait_for_function('document.querySelector(\'[aria-label="Text to copy"]\') || document.querySelector("#toast").textContent.startsWith("Copied.")')
+                expect(page.get_by_role('textbox',name='Text to copy').or_(page.locator('#toast').filter(has_text='Copied.')).first).to_be_visible()
                 # Either real clipboard or a visible manual fallback is acceptable.
                 if page.get_by_role('textbox',name='Text to copy').count():
                     assert len(page.get_by_role('textbox',name='Text to copy').input_value())>300
