@@ -13,35 +13,36 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/three-edition-switchboard
-      - name: Correct the test locator to the actual dialog return control
+      - name: Repair dialog lifecycle and exercise settled clipboard recovery
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import hashlib
-          p = Path('tests/browser.py')
-          before = 'aac0bb9b1e4e7891db696c6cb21bfa04086c0947a7accfb740b1a72de8a16e01'
-          after = '678eb2ae23b4c10036593f003dcedab94c02a63fc71014134ea2507dab1c73f9'
-          current = hashlib.sha256(p.read_bytes()).hexdigest()
-          if current != after:
-              assert current == before, 'Unexpected concurrent test change'
+          def patch(path, before, after, replacements):
+              p = Path(path)
+              current = hashlib.sha256(p.read_bytes()).hexdigest()
+              if current == after: return
+              assert current == before, 'Unexpected concurrent source change'
               source = p.read_text()
-              old = '''                if page.get_by_role('textbox',name='Text to copy').count():
-                              assert len(page.get_by_role('textbox',name='Text to copy').input_value())>300
-                              close(page);click(page,'view','inbox');page.get_by_role('button',name='Email reply for the new project',exact=False).click()
-                          else:click(page,'task',page.locator('[data-action="task"]').filter(visible=True).first.get_attribute('data-id'))
-          '''
-              # Work line-by-line to preserve the source indentation exactly.
-              lines = source.splitlines(keepends=True)
-              target = next(i for i, line in enumerate(lines) if "if page.get_by_role('textbox',name='Text to copy').count():" in line)
-              assert "else:click(page,'task',page.locator(" in lines[target + 3]
-              lines[target + 2:target + 4] = ["                page.locator('#dialog').get_by_role('button',name='Back to task',exact=True).click()\n"]
-              p.write_text(''.join(lines))
+              for old, new in replacements:
+                  assert source.count(old) == 1
+                  source = source.replace(old, new)
+              p.write_text(source)
               assert hashlib.sha256(p.read_bytes()).hexdigest() == after
+          patch('shared/app.mjs', 'f359b72bad65ecaf5eb1bdc9efd56177d64a99d1b0e203f6963f5b79507572ca', 'd29574b2ecfca59b1b0f91bfe22aed269e74816c553c5bc230150ed9ffef8aa4', [
+              ("const d=$('#dialog');if(d.open)d.close();delete d.dataset.taskId;", "const d=$('#dialog');delete d.dataset.taskId;"),
+              ("d.showModal();d.scrollTop=0;}", "if(!d.open)d.showModal();d.scrollTop=0;d.querySelector('button,input,textarea,select,a[href]')?.focus();}"),
+              ("$('#dialog').addEventListener('close',()=>{focused=null;});", "$('#dialog').addEventListener('close',()=>{if(!$('#dialog').open)focused=null;});")
+          ])
+          old = "                click(page,'copy-request')\n                # Either real clipboard or a visible manual fallback is acceptable."
+          js = 'document.querySelector(\'[aria-label="Text to copy"]\') || document.querySelector("#toast").textContent.startsWith("Copied.")'
+          new = "                click(page,'copy-request')\n                # Wait for clipboard settlement before using the dialog's return control.\n                page.wait_for_function(" + repr(js) + ")\n                # Either real clipboard or a visible manual fallback is acceptable."
+          patch('tests/browser.py', '678eb2ae23b4c10036593f003dcedab94c02a63fc71014134ea2507dab1c73f9', '4ab8d59c74f34a22387e49c524ee4e9deb6838d5e31782445714d61d1b117e3a', [(old, new)])
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tests/browser.py
-          git diff --cached --quiet || git commit -m 'Use the modal Back to task control in the clipboard acceptance path'
+          git add shared/app.mjs tests/browser.py
+          git diff --cached --quiet || git commit -m 'Preserve task context across dialog transitions and test asynchronous clipboard recovery'
           git push origin HEAD:feat/three-edition-switchboard
           echo "SOURCE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v4
