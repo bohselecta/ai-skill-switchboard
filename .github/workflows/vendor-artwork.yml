@@ -1,0 +1,49 @@
+name: Vendor commissioned artwork
+on:
+  push:
+    branches: [feat/three-edition-switchboard]
+    paths: [.github/workflows/vendor-artwork.yml]
+permissions:
+  contents: write
+jobs:
+  artwork:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/three-edition-switchboard
+      - name: Download exact commissioned images and record their hashes
+        run: |
+          python3 - <<'PY'
+          import pathlib, urllib.request, hashlib, json
+          sources = {
+            'chatgpt': ('https://v3b.fal.media/files/b/0aac855b/liAxmMroa_n40v8j36LQO_mvoiSBzX.webp', '01a0f319-3d9a-7103-836e-87db3d942d90'),
+            'claude': ('https://v3b.fal.media/files/b/0aac855e/sFUr8Aflr9ePPKJzYIMCI_RYbVcHNt.webp', '01a0f319-c8d8-7b30-8cca-af4bf07170b6'),
+            'gemini': ('https://v3b.fal.media/files/b/0aac85a7/v57JQiMsuGvcDVKbwpLpI_bCh2XBf0.webp', '01a0f324-dda2-7d53-8a42-f4c7707d9e2b')
+          }
+          manifest = {'date': '2026-09-30', 'model': 'fal-ai/nano-banana-pro', 'kind': 'AI-generated editorial illustrations; not product screenshots', 'assets': []}
+          for edition, (url, request_id) in sources.items():
+              data = urllib.request.urlopen(url, timeout=45).read(5000001)
+              assert len(data) < 5000000 and data[:4] == b'RIFF' and data[8:12] == b'WEBP', 'Invalid or oversized WebP'
+              path = pathlib.Path(edition) / 'assets' / 'hero.webp'
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_bytes(data)
+              manifest['assets'].append({'edition': edition, 'path': str(path), 'source_url': url, 'request_id': request_id, 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)})
+          pathlib.Path('docs').mkdir(exist_ok=True)
+          pathlib.Path('docs/artwork-provenance.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          PY
+      - name: Commit only the commissioned assets and provenance
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add chatgpt/assets/hero.webp claude/assets/hero.webp gemini/assets/hero.webp docs/artwork-provenance.json
+          git diff --cached --quiet || git commit -m 'Vendor generated artwork with source provenance and SHA-256 hashes'
+          git push origin HEAD:feat/three-edition-switchboard
+      - uses: actions/upload-artifact@v4
+        with:
+          name: commissioned-artwork
+          path: |
+            chatgpt/assets/hero.webp
+            claude/assets/hero.webp
+            gemini/assets/hero.webp
+            docs/artwork-provenance.json
