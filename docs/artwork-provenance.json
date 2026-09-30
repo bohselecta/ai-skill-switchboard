@@ -1,0 +1,31 @@
+{
+  "date": "2026-09-30",
+  "model": "fal-ai/nano-banana-pro",
+  "kind": "AI-generated editorial illustrations; not product screenshots",
+  "assets": [
+    {
+      "edition": "chatgpt",
+      "path": "chatgpt/assets/hero.webp",
+      "source_url": "https://v3b.fal.media/files/b/0aac855b/liAxmMroa_n40v8j36LQO_mvoiSBzX.webp",
+      "request_id": "01a0f319-3d9a-7103-836e-87db3d942d90",
+      "sha256": "ac8ec9181f578b590ba841a79a07d8306a6e9f95b2d8ca70a2afcca20be7c442",
+      "bytes": 50192
+    },
+    {
+      "edition": "claude",
+      "path": "claude/assets/hero.webp",
+      "source_url": "https://v3b.fal.media/files/b/0aac855e/sFUr8Aflr9ePPKJzYIMCI_RYbVcHNt.webp",
+      "request_id": "01a0f319-c8d8-7b30-8cca-af4bf07170b6",
+      "sha256": "fe53d20a8a34cd6f2b4ab2cec8d011fd5ffb7cd1f5210f617756964056a9ec04",
+      "bytes": 56538
+    },
+    {
+      "edition": "gemini",
+      "path": "gemini/assets/hero.webp",
+      "source_url": "https://v3b.fal.media/files/b/0aac85a7/v57JQiMsuGvcDVKbwpLpI_bCh2XBf0.webp",
+      "request_id": "01a0f324-dda2-7d53-8a42-f4c7707d9e2b",
+      "sha256": "0e808ce5ea44c479819e8018f615c4903d7aa711b5104df9d5ad6f8be931766d",
+      "bytes": 49390
+    }
+  ]
+}
