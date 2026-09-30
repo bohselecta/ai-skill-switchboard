@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/three-edition-switchboard
-      - name: Materialize hash-verified source and remove one-time transport
+      - name: Materialize hash-verified source without modifying workflow permissions
         run: |
           python3 - <<'PY'
           import pathlib, hashlib, lzma, json, shutil
@@ -31,11 +31,12 @@ jobs:
               assert isinstance(text, str) and len(text) < 200000
               target = root.joinpath(*p.parts)
               assert target.resolve().is_relative_to(root)
+              if p.parts[0] == '.github':
+                  assert target.read_text(encoding='utf-8') == text, 'Workflow must be pre-created by the authorized connector'
+                  continue
               target.parent.mkdir(parents=True, exist_ok=True)
               target.write_text(text, encoding='utf-8')
           shutil.rmtree(root / '.build-input')
-          (root / '.github/workflows/assemble-source.yml').unlink()
-          (root / '.github/workflows/vendor-artwork.yml').unlink(missing_ok=True)
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
