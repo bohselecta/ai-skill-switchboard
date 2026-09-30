@@ -21,7 +21,7 @@ def record(name,fn):
         fn(); results.append({'name':name,'status':'passed','seconds':round(time.perf_counter()-start,3)})
         print('PASS',name,flush=True)
     except Exception as e:
-        results.append({'name':name,'status':'failed','error':str(e),'seconds':round(time.perf_counter()-start,3)})
+        results.append({'name':name,'status':'failed','error':f'{type(e).__name__}: {e}','traceback':traceback.format_exc(),'seconds':round(time.perf_counter()-start,3)})
         print('FAIL',name, str(e),flush=True)
         raise
 
@@ -141,11 +141,13 @@ with sync_playwright() as pw:
                 def persistence_download_restore():
                     page.set_viewport_size({'width':1440,'height':1000});page.reload(wait_until='networkidle');expect(page.locator('.skill-tile')).to_have_count(7)
                     click(page,'view','inbox');page.get_by_role('button',name='A reply that needs a little judgment',exact=False).first.click()
-                    f=page.locator('form[data-form="approve"]');f.locator('input').check();f.get_by_role('button').click();close(page)
+                    f=page.locator('form[data-form="approve"]');f.locator('input').check();f.get_by_role('button').click()
+                    expect(page.get_by_text('Approved here. Still not sent anywhere.',exact=False)).to_be_visible();close(page)
                     with page.expect_download() as info:click(page,'view','setup');click(page,'export')
                     backup=OUT/f'{edition}-fixture-backup.json';info.value.save_as(backup)
                     data=json.loads(backup.read_text());assert any(t['status']=='approved' for t in data['tasks'])
                     click(page,'import');page.locator('#file-input').set_input_files(str(backup));click(page,'confirm-restore')
+                    expect(page.locator('#toast')).to_contain_text('Backup restored.')
                     restored=page.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',f'skill-switchboard:{edition}:v1')
                     assert all(t['sensitivity']=='private' and t['status']!='approved' for t in restored['tasks'])
                     # Independent edition storage; navigation cannot silently merge boards.
@@ -162,17 +164,20 @@ with sync_playwright() as pw:
                 assert page.evaluate("localStorage.getItem('skill-switchboard:chatgpt:v1')")=='{broken'
                 click(page,'reset');page.locator('[name="confirmation"]').fill('RESET');page.get_by_role('button',name='Clear this local board').click()
                 page.get_by_role('button',name='Explore a sample board').click()
+                expect(page.locator('.skill-tile')).to_have_count(6)
             record('storage: corrupt data preserved until explicit reset',corruption_recovery)
             def stale_tab():
                 other=context.new_page();other.goto(BASE+'/chatgpt/',wait_until='networkidle')
                 click(other,'capture');other.locator('[name="title"]').fill('Unsaved work in second tab');other.locator('[name="body"]').fill('Please reply with an honest answer.')
                 click(page,'capture');page.locator('[name="title"]').fill('Saved work in first tab');page.locator('[name="body"]').fill('Please reply with a date to confirm.');page.get_by_role('button',name='Capture & route').click()
+                expect(page.locator('#dialog-title')).to_have_text('Saved work in first tab')
                 other.get_by_role('button',name='Capture & route').click();expect(other.locator('#dialog .dialog-message')).to_contain_text('Another tab')
                 assert other.locator('[name="title"]').input_value()=='Unsaved work in second tab'
                 other.close();close(page)
             record('storage: stale-tab write rejected while unsaved text survives',stale_tab)
             def malicious_and_quota():
                 click(page,'capture');f=page.locator('form[data-form="capture"]');f.locator('[name="title"]').fill('<img src=x onerror=alert(1)>');f.locator('[name="body"]').fill('Please reply to <script>alert(1)</script> as plain text.');f.get_by_role('button',name='Capture & route').click()
+                expect(page.locator('#dialog-title')).to_have_text('<img src=x onerror=alert(1)>')
                 assert page.locator('#dialog img').count()==0;assert '<img' in page.locator('#dialog-title').inner_text();close(page)
                 before=page.evaluate("localStorage.getItem('skill-switchboard:chatgpt:v1')")
                 page.evaluate("window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException('quota','QuotaExceededError')}")
