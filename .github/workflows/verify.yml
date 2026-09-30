@@ -1,0 +1,43 @@
+name: Verify
+on:
+  push:
+    branches: [main, feat/three-edition-switchboard]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit, HTTP contracts, and standalone builds
+        run: npm run check
+      - name: Install browser test tools
+        run: |
+          python -m pip install -r tests/requirements.txt
+          python -m playwright install --with-deps chromium
+      - name: Served browser acceptance with synthetic data
+        run: |
+          npm start > /tmp/switchboard-server.log 2>&1 &
+          for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+          npm run test:browser
+      - name: Verify installable skill bundles
+        run: python scripts/check-bundles.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: switchboard-evidence-${{ github.sha }}
+          path: artifacts/
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: switchboard-apps-and-skills-${{ github.sha }}
+          path: dist/

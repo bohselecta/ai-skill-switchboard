@@ -1,0 +1,150 @@
+{
+  "mode": "served Chromium; provider responses mocked",
+  "revision": "5f4cec2aa8defd949e20d9629028f0b92ae3b532",
+  "source_sha256": "05adf7b3160f861cb858c6529a9c28b78f4eeb8211d648553919a50ad115028a",
+  "browser": "143.0.7499.4",
+  "playwright": "1.57.0",
+  "viewport_desktop": "1440x1000",
+  "viewport_mobile": "390x844",
+  "reduced_motion": true,
+  "results": [
+    {
+      "name": "chatgpt: onboarding and six real skill queues",
+      "status": "passed",
+      "seconds": 0.518
+    },
+    {
+      "name": "chatgpt: sample review, consent, approval and edit invalidation",
+      "status": "passed",
+      "seconds": 0.782
+    },
+    {
+      "name": "chatgpt: capture, routing, privacy, manual handoff, response recovery",
+      "status": "passed",
+      "seconds": 1.123
+    },
+    {
+      "name": "chatgpt: ambiguous routing, direction, local brief, people and custom skill",
+      "status": "passed",
+      "seconds": 0.767
+    },
+    {
+      "name": "chatgpt: keyboard focus, search, reduced motion and mobile layout",
+      "status": "passed",
+      "seconds": 0.343
+    },
+    {
+      "name": "chatgpt: actual persistence, download, safe restore and edition isolation",
+      "status": "passed",
+      "seconds": 1.804
+    },
+    {
+      "name": "claude: onboarding and six real skill queues",
+      "status": "passed",
+      "seconds": 0.494
+    },
+    {
+      "name": "claude: sample review, consent, approval and edit invalidation",
+      "status": "passed",
+      "seconds": 0.795
+    },
+    {
+      "name": "claude: capture, routing, privacy, manual handoff, response recovery",
+      "status": "passed",
+      "seconds": 1.056
+    },
+    {
+      "name": "claude: ambiguous routing, direction, local brief, people and custom skill",
+      "status": "passed",
+      "seconds": 0.853
+    },
+    {
+      "name": "claude: keyboard focus, search, reduced motion and mobile layout",
+      "status": "passed",
+      "seconds": 0.338
+    },
+    {
+      "name": "claude: actual persistence, download, safe restore and edition isolation",
+      "status": "passed",
+      "seconds": 1.672
+    },
+    {
+      "name": "gemini: onboarding and six real skill queues",
+      "status": "passed",
+      "seconds": 0.465
+    },
+    {
+      "name": "gemini: sample review, consent, approval and edit invalidation",
+      "status": "passed",
+      "seconds": 0.758
+    },
+    {
+      "name": "gemini: capture, routing, privacy, manual handoff, response recovery",
+      "status": "passed",
+      "seconds": 1.057
+    },
+    {
+      "name": "gemini: ambiguous routing, direction, local brief, people and custom skill",
+      "status": "passed",
+      "seconds": 0.87
+    },
+    {
+      "name": "gemini: keyboard focus, search, reduced motion and mobile layout",
+      "status": "passed",
+      "seconds": 0.355
+    },
+    {
+      "name": "gemini: actual persistence, download, safe restore and edition isolation",
+      "status": "passed",
+      "seconds": 1.651
+    },
+    {
+      "name": "storage: corrupt data preserved until explicit reset",
+      "status": "passed",
+      "seconds": 1.278
+    },
+    {
+      "name": "storage: stale-tab write rejected while unsaved text survives",
+      "status": "passed",
+      "seconds": 1.051
+    },
+    {
+      "name": "security: escaped hostile content and failed-save recovery",
+      "status": "passed",
+      "seconds": 0.524
+    },
+    {
+      "name": "API UI fixtures: billing gate, error, deliberate retry and mandatory review",
+      "status": "passed",
+      "seconds": 1.452
+    }
+  ],
+  "load_observations": [
+    {
+      "edition": "chatgpt",
+      "load_to_workspace_ms": 593,
+      "mode": "served-origin"
+    },
+    {
+      "edition": "claude",
+      "load_to_workspace_ms": 562,
+      "mode": "served-origin"
+    },
+    {
+      "edition": "gemini",
+      "load_to_workspace_ms": 565,
+      "mode": "served-origin"
+    }
+  ],
+  "live_provider_calls": 0,
+  "limitations": [
+    "No authenticated provider-account install test",
+    "No live model quality or latency test",
+    "No participant study",
+    "Not an independent accessibility certification"
+  ],
+  "source_commit": "5f4cec2aa8defd949e20d9629028f0b92ae3b532",
+  "workflow_run": "https://github.com/bohselecta/ai-skill-switchboard/actions/runs/36754358748",
+  "node_tests_passed": 45,
+  "native_account_installation_tested": false
+}
