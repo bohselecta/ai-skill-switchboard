@@ -13,36 +13,83 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/three-edition-switchboard
-      - name: Wait for completed writes before asserting persistence and retain actionable failure evidence
+      - name: Correct fault injection and prepare one-click downloadable editions
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import hashlib
-          p = Path('tests/browser.py')
-          before = 'a8c60ade5cc6d0502434609b7d2dda354dd9e59cd4ee9a5e0f6e452f07ec5d6c'
-          after = 'b976aa6995ed0cef7ac8a5a2c3b4500eefb9b17e994fee616c5c688c19e6e06c'
-          current = hashlib.sha256(p.read_bytes()).hexdigest()
-          if current != after:
-              assert current == before, 'Unexpected concurrent test change'
-              source = p.read_text()
-              changes = [
-                  ("'error':str(e),'seconds'", "'error':f'{type(e).__name__}: {e}','traceback':traceback.format_exc(),'seconds'"),
-                  ("f=page.locator('form[data-form=\"approve\"]');f.locator('input').check();f.get_by_role('button').click();close(page)", "f=page.locator('form[data-form=\"approve\"]');f.locator('input').check();f.get_by_role('button').click()\n                    expect(page.get_by_text('Approved here. Still not sent anywhere.',exact=False)).to_be_visible();close(page)"),
-                  ("click(page,'import');page.locator('#file-input').set_input_files(str(backup));click(page,'confirm-restore')", "click(page,'import');page.locator('#file-input').set_input_files(str(backup));click(page,'confirm-restore')\n                    expect(page.locator('#toast')).to_contain_text('Backup restored.')"),
-                  ("page.get_by_role('button',name='Explore a sample board').click()\n            record('storage:", "page.get_by_role('button',name='Explore a sample board').click()\n                expect(page.locator('.skill-tile')).to_have_count(6)\n            record('storage:"),
-                  ("page.get_by_role('button',name='Capture & route').click()\n                other.get_by_role", "page.get_by_role('button',name='Capture & route').click()\n                expect(page.locator('#dialog-title')).to_have_text('Saved work in first tab')\n                other.get_by_role"),
-                  ("f.get_by_role('button',name='Capture & route').click()\n                assert page.locator('#dialog img')", "f.get_by_role('button',name='Capture & route').click()\n                expect(page.locator('#dialog-title')).to_have_text('<img src=x onerror=alert(1)>')\n                assert page.locator('#dialog img')")
-              ]
-              for old, new in changes:
-                  assert source.count(old) == 1
-                  source = source.replace(old, new)
-              p.write_text(source)
-              assert hashlib.sha256(p.read_bytes()).hexdigest() == after
+          def patch(path, before, after, changes):
+              p=Path(path)
+              current=hashlib.sha256(p.read_bytes()).hexdigest()
+              if current == after: return
+              assert current == before, 'Unexpected concurrent source change'
+              s=p.read_text()
+              for old,new in changes:
+                  assert s.count(old)==1
+                  s=s.replace(old,new)
+              p.write_text(s)
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==after
+          patch('tests/browser.py','b976aa6995ed0cef7ac8a5a2c3b4500eefb9b17e994fee616c5c688c19e6e06c','c5ad5f296317afe5906f4aabd10715ad1fb50665d9d9625473526cd8a7795161',[
+              ('page.evaluate("window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException(\'quota\',\'QuotaExceededError\')}")','page.evaluate("() => { window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException(\'quota\',\'QuotaExceededError\')}; }")'),
+              ('page.evaluate("Storage.prototype.setItem=window.originalSet")','page.evaluate("() => { Storage.prototype.setItem=window.originalSet; }")')
+          ])
+          patch('scripts/check-bundles.py','40020d1a975d0f1bcf6fd3b9af830ea9309c9e7d789f513992ed725470fba5dc','163df5b2e3d7b0df8f34989562afd169af5e0a0b2c0805fab0faecab1271becb',[
+              (" name='skill-switchboard-'+edition\n"," name='skill-switchboard-'+edition\n shipped=root/edition/f'{name}.zip'\n if shipped.exists():\n  assert shipped.read_bytes()==(root/'dist'/f'{name}.zip').read_bytes(), 'Committed bundle is stale: run npm run package'\n")
+          ])
+          Path('scripts/package.mjs').write_text("""/** Refresh the small downloadable bundles committed beside each edition. */
+          import {copyFile} from 'node:fs/promises';
+          import {resolve,dirname} from 'node:path';
+          import {fileURLToPath} from 'node:url';
+          const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+          for(const edition of ['chatgpt','claude','gemini']){
+           const file=`skill-switchboard-${edition}.zip`;
+           await copyFile(resolve(root,'dist',file),resolve(root,edition,file));
+           console.log(`Refreshed ${edition}/${file}`);
+          }
+          """)
+          p=Path('package.json');s=p.read_text()
+          if '"package":' not in s:
+              s=s.replace('"build": "node scripts/build.mjs",','"build": "node scripts/build.mjs",\n    "package": "npm run build && node scripts/package.mjs",')
+              p.write_text(s)
+          for edition in ('chatgpt','claude','gemini'):
+              p=Path(edition)/'README.md';s=p.read_text()
+              if '## Try it without installing anything' in s: continue
+              intro=f"""## Try it without installing anything
+
+          [**Download the app + instruction bundle**](https://github.com/bohselecta/ai-skill-switchboard/raw/refs/heads/main/{edition}/skill-switchboard-{edition}.zip)
+
+          Unzip the download and open `skill-switchboard-{edition}/references/companion.html`
+          in your browser. The complete app and artwork are included. Start with the labeled
+          sample board; no account connection or API setup is needed. Keep private backups,
+          especially when using a downloaded file. The same ZIP can be used for the optional
+          provider skill installation described below.
+
+          """
+              assert s.count('## Requirements\n')==1
+              p.write_text(s.replace('## Requirements\n',intro+'## Requirements\n'))
+          p=Path('README.md');s=p.read_text()
+          if '## Try a ready-to-use bundle' not in s:
+              intro="""## Try a ready-to-use bundle
+
+          [**ChatGPT download**](https://github.com/bohselecta/ai-skill-switchboard/raw/refs/heads/main/chatgpt/skill-switchboard-chatgpt.zip) ·
+          [**Claude download**](https://github.com/bohselecta/ai-skill-switchboard/raw/refs/heads/main/claude/skill-switchboard-claude.zip) ·
+          [**Gemini download**](https://github.com/bohselecta/ai-skill-switchboard/raw/refs/heads/main/gemini/skill-switchboard-gemini.zip)
+
+          Unzip your edition and open its `references/companion.html`. No terminal, account
+          connection, or API key is needed. The ZIP includes the complete app, generated art,
+          reusable skill instructions, and license. For more predictable persistence, use the
+          local-server setup below. Export backups before closing or moving a file workspace.
+
+          """
+              assert s.count('## Get started\n')==1
+              s=s.replace('## Get started\n',intro+'## Get started\n')
+              s=s.replace('Keep contributions bounded, reversible,','After code or bundled-instruction changes, run `npm run package` and commit the\nthree refreshed edition ZIPs; CI rejects stale committed bundles.\n\nKeep contributions bounded, reversible,')
+              p.write_text(s)
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tests/browser.py
-          git diff --cached --quiet || git commit -m 'Synchronize persistence acceptance with actual completed saves and improve failure traces'
+          git add tests/browser.py scripts/check-bundles.py scripts/package.mjs package.json README.md chatgpt/README.md claude/README.md gemini/README.md
+          git diff --cached --quiet || git commit -m 'Complete browser fault injection and provide reproducible one-click edition downloads'
           git push origin HEAD:feat/three-edition-switchboard
           echo "SOURCE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v4
@@ -62,24 +109,26 @@ jobs:
           npm start > /tmp/switchboard-server.log 2>&1 &
           for i in $(seq 1 30); do curl --fail --silent http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
           npm run test:browser
-      - name: Verify bundles
-        run: python scripts/check-bundles.py
-      - name: Commit actual screenshots and acceptance evidence only after all checks pass
+      - name: Package and independently verify downloadable editions
+        run: |
+          npm run package
+          python scripts/check-bundles.py
+      - name: Commit actual screenshots, downloads and evidence only after all checks pass
         run: |
           python - <<'PY'
           import json, pathlib, shutil, os
-          report = json.loads(pathlib.Path('artifacts/browser-report.json').read_text())
-          assert len(report['results']) == 22 and all(r['status'] == 'passed' for r in report['results'])
+          report=json.loads(pathlib.Path('artifacts/browser-report.json').read_text())
+          assert len(report['results'])==22 and all(r['status']=='passed' for r in report['results'])
           for edition in ('chatgpt','claude','gemini'):
-              shutil.copyfile(f'artifacts/{edition}-board.png', f'{edition}/assets/board.png')
-          report['source_commit'] = os.environ['SOURCE_COMMIT']
-          report['workflow_run'] = f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
-          report['node_tests_passed'] = 45
-          report['native_account_installation_tested'] = False
-          pathlib.Path('docs/verification.json').write_text(json.dumps(report, indent=2) + '\n')
+              shutil.copyfile(f'artifacts/{edition}-board.png',f'{edition}/assets/board.png')
+          report['source_commit']=os.environ['SOURCE_COMMIT']
+          report['workflow_run']=f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+          report['node_tests_passed']=45
+          report['native_account_installation_tested']=False
+          pathlib.Path('docs/verification.json').write_text(json.dumps(report,indent=2)+'\n')
           PY
-          git add chatgpt/assets/board.png claude/assets/board.png gemini/assets/board.png docs/verification.json
-          git commit -m 'Publish actual three-edition browser screenshots and passing acceptance evidence'
+          git add chatgpt/assets/board.png claude/assets/board.png gemini/assets/board.png docs/verification.json chatgpt/skill-switchboard-chatgpt.zip claude/skill-switchboard-claude.zip gemini/skill-switchboard-gemini.zip
+          git commit -m 'Publish verified three-edition downloads, actual screenshots and acceptance evidence'
           git push origin HEAD:feat/three-edition-switchboard
           npm run build
       - uses: actions/upload-artifact@v4
