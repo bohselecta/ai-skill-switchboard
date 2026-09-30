@@ -13,36 +13,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/three-edition-switchboard
-      - name: Repair dialog lifecycle and exercise settled clipboard recovery
+      - name: Use CSP-safe browser locators without relaxing application security
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import hashlib
-          def patch(path, before, after, replacements):
-              p = Path(path)
-              current = hashlib.sha256(p.read_bytes()).hexdigest()
-              if current == after: return
+          p = Path('tests/browser.py')
+          before = '4ab8d59c74f34a22387e49c524ee4e9deb6838d5e31782445714d61d1b117e3a'
+          after = 'a8c60ade5cc6d0502434609b7d2dda354dd9e59cd4ee9a5e0f6e452f07ec5d6c'
+          current = hashlib.sha256(p.read_bytes()).hexdigest()
+          if current != after:
               assert current == before, 'Unexpected concurrent source change'
-              source = p.read_text()
-              for old, new in replacements:
-                  assert source.count(old) == 1
-                  source = source.replace(old, new)
-              p.write_text(source)
+              lines = p.read_text().splitlines(keepends=True)
+              indices = [i for i,line in enumerate(lines) if 'page.wait_for_function' in line]
+              assert len(indices) == 1
+              lines[indices[0]] = "                expect(page.get_by_role('textbox',name='Text to copy').or_(page.locator('#toast').filter(has_text='Copied.')).first).to_be_visible()\n"
+              p.write_text(''.join(lines))
               assert hashlib.sha256(p.read_bytes()).hexdigest() == after
-          patch('shared/app.mjs', 'f359b72bad65ecaf5eb1bdc9efd56177d64a99d1b0e203f6963f5b79507572ca', 'd29574b2ecfca59b1b0f91bfe22aed269e74816c553c5bc230150ed9ffef8aa4', [
-              ("const d=$('#dialog');if(d.open)d.close();delete d.dataset.taskId;", "const d=$('#dialog');delete d.dataset.taskId;"),
-              ("d.showModal();d.scrollTop=0;}", "if(!d.open)d.showModal();d.scrollTop=0;d.querySelector('button,input,textarea,select,a[href]')?.focus();}"),
-              ("$('#dialog').addEventListener('close',()=>{focused=null;});", "$('#dialog').addEventListener('close',()=>{if(!$('#dialog').open)focused=null;});")
-          ])
-          old = "                click(page,'copy-request')\n                # Either real clipboard or a visible manual fallback is acceptable."
-          js = 'document.querySelector(\'[aria-label="Text to copy"]\') || document.querySelector("#toast").textContent.startsWith("Copied.")'
-          new = "                click(page,'copy-request')\n                # Wait for clipboard settlement before using the dialog's return control.\n                page.wait_for_function(" + repr(js) + ")\n                # Either real clipboard or a visible manual fallback is acceptable."
-          patch('tests/browser.py', '678eb2ae23b4c10036593f003dcedab94c02a63fc71014134ea2507dab1c73f9', '4ab8d59c74f34a22387e49c524ee4e9deb6838d5e31782445714d61d1b117e3a', [(old, new)])
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add shared/app.mjs tests/browser.py
-          git diff --cached --quiet || git commit -m 'Preserve task context across dialog transitions and test asynchronous clipboard recovery'
+          git add tests/browser.py
+          git diff --cached --quiet || git commit -m 'Wait for clipboard settlement using CSP-safe locators, retaining all recovery assertions'
           git push origin HEAD:feat/three-edition-switchboard
           echo "SOURCE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v4
