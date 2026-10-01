@@ -76,7 +76,7 @@ with sync_playwright() as pw:
                 f=page.locator('form[data-form="skill-chat"]')
                 f.locator('[name="message"]').fill('Draft a short reply acknowledging receipt and asking for the missing date.')
                 f.get_by_role('button').click()
-                expect(page.get_by_text('Draft a short reply acknowledging receipt',exact=False)).to_be_visible()
+                expect(page.locator('.chat-task-title').filter(has_text='Draft a short reply acknowledging receipt').first).to_be_visible()
                 expect(page.locator('#toast')).to_contain_text('Added to Reply desk')
                 no_overflow(page);screenshot(page,f'{edition}-skill-chat');close(page)
             record(f'{edition}: skill opens as a conversational multi-task station',skill_chat)
