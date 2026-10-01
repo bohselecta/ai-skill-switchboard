@@ -4,7 +4,7 @@
 
 **Turn incoming work into a clear next decision—with Claude helping prepare, and you
 remaining in charge.** A polished personal workbench, not another subscription or an
-agent activity feed. Start with six useful skills; shape the board up to 24.
+agent activity feed. **Tasks move; skills stay put.** Start with six useful skill stations; pin up to 24 while keeping a larger skill library behind the board.
 
 ![Editorial illustration of the Claude edition's modular switchboard](assets/hero.webp)
 
@@ -90,6 +90,18 @@ A simple example: “Could we meet Thursday?” becomes a draft asking for a tim
 fabricated confirmed calendar invitation. The board holds the loose end without
 claiming it has made a commitment.
 
+**Chat with the skill.** Opening a tile now feels like opening the capability itself:
+one calm conversation can show several tasks, surface the questions a draft still
+needs answered, and accept a new message directly into that skill's queue. The chat
+is a view over durable task records, not a second hidden inbox. Moving a task to a
+different skill preserves its journey and invalidates stale approval where needed.
+
+A skill is still not an agent or persona. It is a reusable workflow contract and
+conversation surface. The provider model is the runner when you choose to use it.
+This local release does not launch delegated agents; a future host-integrated runner
+may use bounded agent runs behind the skill without expanding its effect permissions
+or bypassing human approval. See [Architecture](../docs/ARCHITECTURE.md).
+
 ### Reusable instructions inside Claude
 
 Build or download `skill-switchboard-claude.zip`. In Claude, go to **Customize →
@@ -149,9 +161,11 @@ personal history, not an immutable audit trail.
 
 ## What is—and is not—shipped
 
-Working: local board, queues, routing, review and approval, custom skills, people
-context, backups, three API adapters, standalone app, instruction bundle, tests,
-and generated artwork integrated into the actual interface.
+Working: local board, stable skill stations, conversational skill views, task journeys,
+explainable local routing, a larger skill library behind the 24-slot board, richer
+skill contracts, review and approval, custom skills, people context, backups, three
+API adapters, standalone app, instruction bundle, tests, and generated artwork
+integrated into the actual interface.
 
 Not shipped: automatic Slack/email/webhook intake, semantic embeddings, native
 synchronized UI inside Claude, shared team accounts, SSO, cloud database, immutable
