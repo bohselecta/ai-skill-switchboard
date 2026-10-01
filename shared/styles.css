@@ -74,3 +74,8 @@ dialog{border:1px solid var(--line);background:var(--surface);color:var(--ink);p
  .skill-composer{padding-bottom:4px}
  .mini-composer{display:grid;grid-template-columns:1fr}
 }
+
+.routing-signals{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}
+.routing-signals span{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:9px;color:var(--muted);text-align:center}
+.routing-signals b{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+@media(max-width:620px){.routing-signals{grid-template-columns:repeat(2,1fr)}}
