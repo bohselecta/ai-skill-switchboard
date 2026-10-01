@@ -24,5 +24,5 @@ for(const edition of ['chatgpt','claude','gemini']){
  await writeFile(resolve(out,`${prefix}.zip`),zip);
  outputs.push({file:`${prefix}.zip`,bytes:zip.length,sha256:createHash('sha256').update(zip).digest('hex')});
 }
-await writeFile(resolve(out,'build-manifest.json'),JSON.stringify({version:'1.0.0',outputs},null,2)+'\n');
+await writeFile(resolve(out,'build-manifest.json'),JSON.stringify({version:'1.1.0',outputs},null,2)+'\n');
 console.log('Built static site and three self-contained companion files. No credentials or provider calls.');for(const output of outputs)console.log(`${output.file}: ${Math.ceil(output.bytes/1024)} KiB`);
