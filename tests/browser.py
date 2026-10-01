@@ -68,6 +68,18 @@ with sync_playwright() as pw:
                 expect(page.locator('.decision-row')).to_have_count(2)
                 no_overflow(page);screenshot(page,f'{edition}-board')
             record(f'{edition}: onboarding and six real skill queues',onboarding)
+            def skill_chat():
+                page.locator('.skill-tile').filter(has_text='Reply desk').first.click()
+                expect(page.locator('.skill-chat-shell')).to_be_visible()
+                expect(page.get_by_role('heading',name="I'm Reply desk.")).to_be_visible()
+                expect(page.get_by_text('I still need to know:',exact=True)).to_be_visible()
+                f=page.locator('form[data-form="skill-chat"]')
+                f.locator('[name="message"]').fill('Draft a short reply acknowledging receipt and asking for the missing date.')
+                f.get_by_role('button').click()
+                expect(page.get_by_text('Draft a short reply acknowledging receipt',exact=False)).to_be_visible()
+                expect(page.locator('#toast')).to_contain_text('Added to Reply desk')
+                no_overflow(page);screenshot(page,f'{edition}-skill-chat');close(page)
+            record(f'{edition}: skill opens as a conversational multi-task station',skill_chat)
             def approve_edit():
                 page.get_by_role('button',name='A reply that needs a little judgment',exact=False).first.click()
                 expect(page.get_by_text('Illustrative fixture — not a live model response',exact=False)).to_be_visible()
