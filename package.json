@@ -1,6 +1,6 @@
 {
   "name": "skill-switchboard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "A local-first human decision board for ChatGPT, Claude, and Gemini.",
   "type": "module",
