@@ -4,12 +4,15 @@
 
 **Turn incoming work into a clear next decision—with Gemini helping prepare, and you
 remaining in charge.** A polished personal workbench, not another subscription or an
-agent activity feed. Start with six useful skills; shape the board up to 24.
+agent activity feed. Start with six useful skills; keep up to 24 stable skill stations on the board.
 
 ![Editorial illustration of the Gemini edition's modular switchboard](assets/hero.webp)
 
 [MIT](LICENSE) · [Permission granted to Google](PERMISSION-GRANT.md) ·
 [Repository](../README.md) · [Verification](../docs/ACCEPTANCE.md)
+
+**Tasks move. Skills stay put.** Work carries the source, context, history, and approval.
+A skill is a stable reusable capability; it does not behave like a roaming AI employee.
 
 ## Less in your head. More ready to review.
 
@@ -60,7 +63,7 @@ empty board. The sample is explicitly fictional, not a live model result.
 Choose **Everyday work** for replies, meeting notes, issues, decisions, research, and
 code review. **Project delivery** adds stakeholder/dependency work. **Maker** focuses
 on code, bugs, research, decisions, content, and data. Add skills only as you need
-them; custom manifests define their purpose and negative scope, not permissions.
+them; custom manifests define when to use them, when not to, expected output, and their effect boundary—not permissions. The repository also keeps a provider-neutral [canonical skill library](../skills/README.md).
 
 For a zero-server file, run `npm run build` and open
 `dist/skill-switchboard-gemini.html`. Its code and art are self-contained. File-URL
@@ -78,13 +81,15 @@ choose; the app does not invent a confidence percentage.
 **Prepare.** Open the task, choose a preparation direction, and use **Prepare with
 Gemini**. Review what is safe to share, mark that task shareable, copy the request,
 and paste it into your chat. The prompt includes that task and its skill contract,
-not other tasks or people notes. Copying does not automatically insert or execute
+not other tasks or people notes. If this task already passed through another approved skill, its reviewed prior stage can travel with the task as context. Copying does not automatically insert or execute
 anything in Gemini. A local brief is also available and is labeled deterministic.
 
 **Review.** Paste the response back—plain text or the requested JSON. Inspect the
 source and uncertainties, edit as needed, then check the review confirmation and
 approve. Copy or download the draft. **Approved here does not mean sent anywhere.**
 Changing source, steering, routing, draft, or ownership invalidates the old approval.
+
+**Continue.** If the approved work needs another capability, choose **Continue to another skill**. The same task moves to the new station while the reviewed prior stage stays attached in its task journey. Correcting the original source clears that journey so stale evidence cannot masquerade as current work.
 
 A simple example: “Could we meet Thursday?” becomes a draft asking for a time—not a
 fabricated confirmed calendar invitation. The board holds the loose end without
@@ -134,7 +139,7 @@ server as an unauthenticated public proxy.
 **N** captures. **/** searches. **Escape** closes a dialog. Keyboard focus stays inside
 open dialogs; reduced-motion preferences are honored. Mobile layouts preserve the
 same actions without a miniature desktop grid. Pause a skill to stop new automatic
-routing; remove it only when no retained task references it.
+routing; remove it only when no retained task currently sits there. Completed journey stages keep a historical skill name even if the station is later removed.
 
 Use **Setup & data → Export backup** before clearing data or moving browsers.
 Backups contain private content. Restore validates and asks before replacement,

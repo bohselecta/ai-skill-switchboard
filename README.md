@@ -3,8 +3,10 @@
 ### Clear the noise. Keep the judgment.
 
 **A local-first decision board for the work you do with ChatGPT, Claude, or Gemini.**
-Capture a loose end, give it a skill, prepare a useful draft, and make the call.
+Capture a loose end, let it land at the right skill, prepare a useful draft, and make the call.
 Not another conversation to keep track of. Not a wall of agents pretending to work.
+
+> **Tasks move. Skills stay put.** The task carries source, context, journey, and approval. A skill is a stable reusable capability; the AI runner can change without changing what the skill means.
 
 [![Verify](https://github.com/bohselecta/ai-skill-switchboard/actions/workflows/verify.yml/badge.svg)](https://github.com/bohselecta/ai-skill-switchboard/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-202725.svg)](LICENSE)
@@ -34,8 +36,7 @@ a text file. Local rules suggest one skill. Ambiguous work stays visible for you
 route rather than being confidently misclassified.
 
 **Start small, then shape the board.** Pick Everyday, Project Delivery, or Maker.
-Six skills appear immediately, with twelve built-ins and room for up to 24. Add your
-own instruction contracts, pause routing, and keep owner context close to tasks.
+Six skill stations appear immediately. The board has 24 working slots, while the repository can hold a larger portable skill library. Add your own instruction contracts, pause routing, and keep owner context close to tasks.
 
 **Prepare with the account you already use.** Copy a scoped request into your chat,
 then bring the result back. Or configure the optional local API bridge for a single
@@ -45,7 +46,7 @@ this repository. “Pro” describes the intended quality, not a new subscriptio
 **Review something concrete.** Source, purpose, uncertainties, draft, and provenance
 live together. Edit, steer differently, reroute, or approve the exact draft. Nothing
 is silently emailed, charged, signed, deleted, or deployed. An approved draft is not
-a completed external action.
+a completed external action. When approved work genuinely needs another capability, the same task can continue to another skill while its reviewed prior stage stays attached as a task journey.
 
 ## Requirements
 
@@ -98,14 +99,18 @@ installation details. A skill bundle is not a native synchronized dashboard.
 
 ## The everyday loop
 
-**Capture → prepare → review.** An email becomes a draft reply, a meeting becomes
-checkable next steps, a loose dependency becomes a coordination brief. Copy or
-download an approved draft when ready; sending it remains a separate human action.
+**Capture → prepare → review → continue or close.** An email becomes a draft reply, a meeting becomes checkable next steps, a loose dependency becomes a coordination brief. If one reviewed output becomes useful context for the next capability, move the same task onward instead of inventing a mega-agent. Copy or download an approved draft when ready; sending it remains a separate human action.
 
 Use **N** to capture, **/** to search, and **Escape** to close a dialog. The board stays
 spatially stable while **Next Decisions** surfaces review, routing, and blocked work.
 People cards are private responsibility notes, not invitations. Export a backup in
 **Setup & data** before switching browsers or clearing data.
+
+### The capability layer
+
+Each skill now states **Use when**, **Do not use when**, helpful inputs, an output contract, and an effect class. The router still uses visible deterministic phrases in v1.1; these richer contracts make routing easier to inspect and improve without showing fake confidence percentages. Provider-neutral copies live in the checked-in [canonical skill library](skills/README.md) and are generated from the same source contract used by all three editions.
+
+A tile is best understood as a **skill station**: a configured place where tasks queue. ChatGPT, Claude, Gemini, or a future runner may apply the capability, but the runner is not the skill and does not own the task.
 
 ## Advanced setup and honest boundaries
 

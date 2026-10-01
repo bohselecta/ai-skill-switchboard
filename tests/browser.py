@@ -88,7 +88,7 @@ with sync_playwright() as pw:
                 form.locator('[name="title"]').fill('Email reply for the new project')
                 form.locator('[name="body"]').fill('Please reply to this email: can you confirm a suitable time?')
                 form.get_by_role('button',name='Capture & route').click()
-                expect(page.get_by_text('Local rule matched:',exact=False)).to_be_visible()
+                expect(page.get_by_text('Matched Reply desk:',exact=False)).to_be_visible()
                 # First handoff must stop at the sharing boundary.
                 click(page,'handoff');expect(page.get_by_role('heading',name='Check before sharing.')).to_be_visible()
                 form=page.locator('form[data-form="sharing"]');form.locator('input').check()
@@ -115,6 +115,22 @@ with sync_playwright() as pw:
                 assert page.locator('form[data-form="approve"]').count()==0
                 click(page,'handoff');expect(page.get_by_role('heading',name='Check before sharing.')).to_be_visible();close(page)
             record(f'{edition}: capture, routing, privacy, manual handoff, response recovery',capture_route_share)
+            def task_journey():
+                close(page);click(page,'capture');form=page.locator('form[data-form="capture"]')
+                form.locator('[name="title"]').fill('Move one task through two skills')
+                form.locator('[name="body"]').fill('Please reply to this email without inventing a date.')
+                form.get_by_role('button',name='Capture & route').click();expect(page.get_by_text('Matched Reply desk:',exact=False)).to_be_visible()
+                click(page,'local-brief');approve=page.locator('form[data-form="approve"]');approve.locator('input').check();approve.get_by_role('button').click()
+                expect(page.get_by_role('button',name='Continue to another skill',exact=False)).to_be_visible();click(page,'continue')
+                move=page.locator('form[data-form="continue"]');move.locator('select').select_option('decision');move.get_by_role('button',name='Move task',exact=False).click()
+                expect(page.locator('.journey-strip')).to_contain_text('Reply desk');expect(page.locator('.journey-strip')).to_contain_text('Decision brief')
+                expect(page.locator('#dialog .status-pill')).to_have_text('Ready to prepare')
+                local=page.evaluate('(key)=>JSON.parse(localStorage.getItem(key))',f'skill-switchboard:{edition}:v1') if not RENDER else None
+                if local:
+                    task=next(t for t in local['tasks'] if t['title']=='Move one task through two skills')
+                    assert task['skillId']=='decision' and len(task['journey'])==1 and task['journey'][0]['skillId']=='reply'
+                click(page,'close-task');click(page,'confirm-close')
+            record(f'{edition}: approved task journey moves work between stable skills',task_journey)
             def triage_people_skills():
                 click(page,'view','inbox');page.get_by_role('button',name='This one needs a human route',exact=False).click()
                 form=page.locator('form[data-form="route"]');form.locator('select').select_option('decision');form.get_by_role('button').click()

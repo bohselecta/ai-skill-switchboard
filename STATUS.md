@@ -1,54 +1,58 @@
 # Current state — 2026-09-30
 
-**v1 personal companion + optional local API bridge.** Working implementation, not
-an autonomous enterprise service or an installed native provider app.
+**v1.1 task-to-skill companion + optional local API bridge.** Working implementation,
+not an autonomous enterprise service or installed native provider app.
+
+## Product model
+
+The visible invariant is now explicit: **Tasks move. Skills stay put.** A task carries
+its source, current station, review state, approval, and bounded journey. A skill is a
+stable capability contract. The provider/model is a runner, not the skill and not the
+task owner.
 
 ## Delivered
 
 Three branded editions; generated artwork and actual browser screenshots; six-skill
-starter packs; 12 built-in contracts; 24-slot limit and custom manifests; local rule
-routing/manual triage; people context; priority/owner/due labels; source and draft
-review; approval revision gates; portable backups with privacy reset;
-corrupt/quota/stale-tab recovery; keyboard-accessible dialogs; text-file intake;
-explicit provider handoff; optional server-only API adapters for OpenAI, Anthropic,
-Google. Each edition includes a ready-to-open app/instruction ZIP, a full README,
-MIT license and provider permission grant. Downloads are reproducible with
-`npm run package`; CI rejects stale committed bundles.
+starter packs; 12 built-in contracts; 24 board working slots and custom manifests;
+provider-neutral canonical `skills/*/SKILL.md` library; deterministic explainable local
+routing/manual triage; richer Use when / Do not use / input / output / effect contracts;
+people context; priority/owner/due labels; source/draft review; exact-revision approval;
+approved task journeys between skills; portable backups with privacy reset; corrupt,
+quota, and stale-tab recovery; keyboard-accessible dialogs; text-file intake; explicit
+provider handoff; optional server-only API adapters for OpenAI, Anthropic, and Google.
 
-## Verification
+A task journey archives a bounded approved prior stage before moving the same task to
+another enabled skill. It is not autonomous chaining and grants no external authority.
+Correcting original source clears the journey.
 
-[Passing release evidence](https://github.com/bohselecta/ai-skill-switchboard/actions/runs/36754358748)
-checks source commit `5f4cec2aa8defd949e20d9629028f0b92ae3b532`:
+## Local verification while developing v1.1
 
-- **45 Node unit and HTTP integration tests passed**, plus standalone builds.
-- **22 served-browser scenario groups passed** across all three editions, including
-  capture-to-approval, privacy, edits, actual persistence, downloads/restores, edition
-  isolation, keyboard/mobile/reduced-motion, stale tabs, corrupt storage, quota
-  failure, hostile content, and API error/retry/review gates.
-- **Three app/instruction ZIPs independently validated**, including content and
-  reproducibility checks. Generated assets are vendored with provenance and hashes.
+- **51 Node unit and HTTP integration tests passed** locally.
+- **18 render-only Chromium scenario groups passed** across the three editions,
+  including the new approved-task journey, routing explanation, custom-skill flow,
+  keyboard focus, reduced motion, and mobile layout.
+- Static builds for all three standalone editions succeeded.
+- `npm run skills:check` confirms the 12 checked-in canonical skills match the source
+  contracts.
 
-Environment: GitHub-hosted Ubuntu, Node 22, Python 3.12, Playwright 1.57.0,
-Chromium 143.0.7499.4; desktop 1440×1000 and mobile 390×844. Provider responses in
-these tests are fixtures, not live model calls. `docs/verification.json` records
-source identity and per-scenario evidence. The permanent Verify workflow checks
-subsequent branch, pull-request and main revisions separately.
+The local environment blocks served localhost navigation in Chromium, so persistence,
+download/restore, stale-tab, storage-failure, and API UI acceptance still require the
+GitHub-hosted served-browser workflow before this branch is release-ready. Do not turn
+render-only results into a served-origin claim.
 
-Local Node tests also pass. The restricted local Chromium environment permits
-HTML rendering but blocks served navigation; those render-only checks are not
-counted as persistence acceptance. Actual screenshots come from the served CI app,
-using labeled fictional work, not generated UI mockups. Artwork is AI-generated.
+## Existing verified v1 evidence
+
+The previous v1 release was verified in GitHub-hosted Ubuntu with 45 Node/HTTP tests
+and 22 served-browser scenario groups. v1.1 changes routing explanations, skill
+contracts, task state, UI, generated skill files, and bundles; it therefore requires a
+fresh CI result rather than inheriting the old release's acceptance.
 
 ## Boundaries and next step
 
-Not verified: live provider draft quality/latency/billing; authenticated skill
-installation in user accounts; Safari/Firefox; participant outcomes; independent
-security/accessibility certification. No app API entitlements or live drafting
-spend were added. Browser storage is local and unencrypted; export private backups.
+Still not implemented: automatic Slack/Gmail/webhook intake, embedding/semantic
+routing, native synchronized host UI, cloud sync, SSO, shared team queues, immutable
+audit, or external execution. No production deployment is asserted.
 
-Not implemented: automatic Slack/Gmail/webhook ingestion, embeddings, native MCP UI,
-cloud sync, SSO, shared team queues, immutable audit, external execution, or guaranteed
-undo of provider actions. No production deployment is asserted. The next bounded
-integration slice and agent entry prompt are in `docs/NEXT-AGENT.md`; preserve these
-boundaries in marketing. First use: open an edition's downloaded
-`references/companion.html` and select **Explore a sample board**.
+Next: run the full GitHub Actions acceptance suite against the v1.1 review branch,
+refresh reproducible edition ZIPs, inspect browser evidence, and only then consider a
+merge. Native intake remains a later separately authorized slice.

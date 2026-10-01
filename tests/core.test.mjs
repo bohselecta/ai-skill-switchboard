@@ -40,3 +40,78 @@ test('unreviewed imported drafts cannot masquerade as approval in the UI', () =>
  const s=withSamples(createState());const t=s.tasks.find(t=>t.result);t.status='blocked';t.decision=null;
  assert.throws(()=>validateState(s),/retained draft/);
 });
+
+test('skill contracts explain use, non-use, inputs, output, and effect boundary without granting tools',()=>{
+ const legacy={id:'legacy-skill',name:'Legacy skill',description:'Old manifest still works.',icon:'list',keywords:['legacy'],instructions:'Prepare a legacy draft.',negativeScope:'No external actions.',version:1,enabled:true};
+ const sk=validateSkill(legacy);
+ assert.equal(sk.useWhen,legacy.description);
+ assert.equal(sk.doNotUseWhen,legacy.negativeScope);
+ assert.equal(sk.effectClass,'prepare');
+ assert.deepEqual(sk.requiredInputs,[]);
+ assert.match(sk.outputContract,/reviewable draft/);
+ const rich=validateSkill({...CATALOG[0],effectClass:'read-only',requiredInputs:['A message']});
+ assert.equal(rich.effectClass,'read-only');
+ assert.deepEqual(rich.requiredInputs,['A message']);
+ assert.throws(()=>validateSkill({...CATALOG[0],effectClass:'send-everything'}),/effect class/);
+});
+
+test('routing evidence names matching stations rather than inventing confidence',()=>{
+ const s=createState();
+ const one=routeTask('Please reply to the email.',s.skills);
+ assert.equal(one.skillId,'reply');
+ assert.match(one.reason,/Reply desk/);
+ assert.match(one.reason,/email|reply/);
+ assert.doesNotMatch(one.reason,/%|confidence/i);
+ const many=routeTask('Reply to this email after reading the meeting transcript.',s.skills);
+ assert.equal(many.skillId,null);
+ assert.match(many.reason,/Reply desk/);
+ assert.match(many.reason,/Meeting notes/);
+});
+
+test('an approved task can move through another stable skill while preserving its reviewed journey',()=>{
+ let s=approved();
+ const id=s.tasks[0].id;
+ const firstDraft=s.tasks[0].result.draft;
+ s=dispatch(s,{type:'continue',id,expected:s.tasks[0].revision,skillId:'research'});
+ const t=s.tasks[0];
+ assert.equal(t.skillId,'research');
+ assert.equal(t.status,'ready');
+ assert.equal(t.result,null);
+ assert.equal(t.decision,null);
+ assert.equal(t.journey.length,1);
+ assert.equal(t.journey[0].skillId,'reply');
+ assert.equal(t.journey[0].skillName,'Reply desk');
+ assert.equal(t.journey[0].draft,firstDraft);
+ assert.match(t.route.reason,/Continued by you from Reply desk to Research lens/);
+ const prompt=makeHandoff(t,s.skills.find(sk=>sk.id==='research'));
+ assert.match(prompt,/PRIOR APPROVED SKILL STAGES/);
+ assert.match(prompt,/Reply desk/);
+ assert.match(prompt,/Could you confirm the date/);
+ validateState(s);
+});
+
+test('task journeys require approval, a different enabled skill, and stay bounded',()=>{
+ let s=drafted();
+ assert.throws(()=>dispatch(s,{type:'continue',id:s.tasks[0].id,expected:s.tasks[0].revision,skillId:'research'}),/Approve/);
+ s=approved();
+ assert.throws(()=>dispatch(s,{type:'continue',id:s.tasks[0].id,expected:s.tasks[0].revision,skillId:'reply'}),/different/);
+ s=dispatch(s,{type:'toggleSkill',id:'research'});
+ assert.throws(()=>dispatch(s,{type:'continue',id:s.tasks[0].id,expected:s.tasks[0].revision,skillId:'research'}),/enabled/);
+});
+
+test('correcting the original source clears completed journey stages',()=>{
+ let s=approved();
+ s=dispatch(s,{type:'continue',id:s.tasks[0].id,expected:s.tasks[0].revision,skillId:'research'});
+ assert.equal(s.tasks[0].journey.length,1);
+ s=change(s,'editSource',{title:'Corrected source',body:'Research this corrected source with no email reply.',source:'Corrected fixture',sourceUrl:''});
+ assert.equal(s.tasks[0].journey.length,0);
+ assert.equal(s.tasks[0].sensitivity,'private');
+});
+
+test('old v1 backups without journey fields migrate in memory without losing work',()=>{
+ const old=add();
+ delete old.tasks[0].journey;
+ const restored=validateState(old);
+ assert.deepEqual(restored.tasks[0].journey,[]);
+ assert.equal(restored.tasks[0].title,old.tasks[0].title);
+});

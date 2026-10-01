@@ -13,11 +13,14 @@ Marking a task shareable records an informed local choice; it is not an employer
 permission, a legal basis, or a provider privacy guarantee. Copying a prompt to a
 chat or explicitly generating through an API transmits the selected material under
 that service's policies. People notes and unrelated work are excluded from model
-requests. Review sensitive content before transmission; automatic redaction is not
-implemented and cannot be assumed.
+requests. When a task has already passed through another skill, the current request
+may also include bounded excerpts and summaries from those **reviewed prior task
+stages** so the work can continue coherently. Those stages are context only, never
+permission or approval for the current stage. Review sensitive content before
+transmission; automatic redaction is not implemented and cannot be assumed.
 
 All dynamic text is escaped. Imports whitelist IDs, URLs, dates, references, limits,
-and result fields. No imported authority, executable skill manifest, or source
+and result fields. No imported authority, executable skill manifest, prior journey stage, or source
 instruction can create external-action capability. Prompt-injection resistance is
 not a guarantee of model truthfulness; every result still requires human review.
 
