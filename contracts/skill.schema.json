@@ -1,16 +1,50 @@
 {
- "$schema":"https://json-schema.org/draft/2020-12/schema",
- "title":"Skill Switchboard draft-only skill v1",
- "type":"object","additionalProperties":false,
- "required":["id","name","description","keywords","instructions","negativeScope","version"],
- "properties":{
-  "id":{"type":"string","pattern":"^[a-z][a-z0-9-]*$","maxLength":60},
-  "name":{"type":"string","minLength":1,"maxLength":60},
-  "description":{"type":"string","minLength":1,"maxLength":180},
-  "keywords":{"type":"array","maxItems":12,"items":{"type":"string","minLength":1,"maxLength":40}},
-  "instructions":{"type":"string","minLength":1,"maxLength":4000},
-  "negativeScope":{"type":"string","minLength":1,"maxLength":1000},
-  "icon":{"enum":["mail","calendar","flag","fork","search","code","people","link","pen","chart","bug","list"]},
-  "version":{"const":1},"enabled":{"type":"boolean"}
- }
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Skill Switchboard portable skill v1",
+  "description": "A reusable capability contract. A skill can be pinned as a station, chatted with through a host UI, and applied by a runner. It does not itself grant tools or external-action authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "description", "keywords", "instructions", "negativeScope", "version"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$", "maxLength": 60},
+    "name": {"type": "string", "minLength": 1, "maxLength": 60},
+    "description": {"type": "string", "minLength": 1, "maxLength": 180},
+    "keywords": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {"type": "string", "minLength": 1, "maxLength": 40}
+    },
+    "instructions": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "useWhen": {"type": "string", "minLength": 1, "maxLength": 600},
+    "doNotUseWhen": {"type": "string", "minLength": 1, "maxLength": 600},
+    "requiredInputs": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {"type": "string", "minLength": 1, "maxLength": 80}
+    },
+    "outputContract": {"type": "string", "minLength": 1, "maxLength": 800},
+    "effectClass": {
+      "enum": ["read-only", "draft", "external-mutation", "financial-commitment", "destructive"]
+    },
+    "routingExamples": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positive": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {"type": "string", "minLength": 1, "maxLength": 240}
+        },
+        "negative": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {"type": "string", "minLength": 1, "maxLength": 240}
+        }
+      }
+    },
+    "negativeScope": {"type": "string", "minLength": 1, "maxLength": 1000},
+    "icon": {"enum": ["mail", "calendar", "flag", "fork", "search", "code", "people", "link", "pen", "chart", "bug", "list"]},
+    "version": {"const": 1},
+    "enabled": {"type": "boolean"}
+  }
 }
