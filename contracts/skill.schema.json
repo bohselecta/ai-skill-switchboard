@@ -1,16 +1,33 @@
 {
- "$schema":"https://json-schema.org/draft/2020-12/schema",
- "title":"Skill Switchboard draft-only skill v1",
- "type":"object","additionalProperties":false,
- "required":["id","name","description","keywords","instructions","negativeScope","version"],
- "properties":{
-  "id":{"type":"string","pattern":"^[a-z][a-z0-9-]*$","maxLength":60},
-  "name":{"type":"string","minLength":1,"maxLength":60},
-  "description":{"type":"string","minLength":1,"maxLength":180},
-  "keywords":{"type":"array","maxItems":12,"items":{"type":"string","minLength":1,"maxLength":40}},
-  "instructions":{"type":"string","minLength":1,"maxLength":4000},
-  "negativeScope":{"type":"string","minLength":1,"maxLength":1000},
-  "icon":{"enum":["mail","calendar","flag","fork","search","code","people","link","pen","chart","bug","list"]},
-  "version":{"const":1},"enabled":{"type":"boolean"}
- }
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Skill Switchboard stable skill station v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "description", "keywords", "instructions", "negativeScope", "version"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$", "maxLength": 60},
+    "name": {"type": "string", "minLength": 1, "maxLength": 60},
+    "description": {"type": "string", "minLength": 1, "maxLength": 180},
+    "keywords": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {"type": "string", "minLength": 1, "maxLength": 40}
+    },
+    "instructions": {"type": "string", "minLength": 1, "maxLength": 4000},
+    "useWhen": {"type": "string", "minLength": 1, "maxLength": 600},
+    "doNotUseWhen": {"type": "string", "minLength": 1, "maxLength": 600},
+    "requiredInputs": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {"type": "string", "minLength": 1, "maxLength": 160}
+    },
+    "outputContract": {"type": "string", "minLength": 1, "maxLength": 600},
+    "effectClass": {
+      "enum": ["read-only", "prepare", "external-mutation", "financial", "destructive"]
+    },
+    "negativeScope": {"type": "string", "minLength": 1, "maxLength": 1000},
+    "icon": {"enum": ["mail", "calendar", "flag", "fork", "search", "code", "people", "link", "pen", "chart", "bug", "list"]},
+    "version": {"const": 1},
+    "enabled": {"type": "boolean"}
+  }
 }

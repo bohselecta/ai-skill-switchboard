@@ -1,10 +1,12 @@
 {
   "name": "skill-switchboard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "A local-first human decision board for ChatGPT, Claude, and Gemini.",
+  "description": "A local-first human decision board where tasks move to stable skills for ChatGPT, Claude, and Gemini.",
   "type": "module",
-  "engines": {"node": ">=22"},
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "start": "node server.mjs",
     "dev": "node server.mjs",
@@ -12,7 +14,9 @@
     "test:browser": "python3 tests/browser.py",
     "build": "node scripts/build.mjs",
     "package": "npm run build && node scripts/package.mjs",
-    "check": "node --check shared/core.mjs && node --check shared/app.mjs && node --check server.mjs && npm test && npm run build"
+    "check": "node --check shared/core.mjs && node --check shared/app.mjs && node --check server.mjs && npm run skills:check && npm test && npm run build",
+    "skills:generate": "node scripts/generate-skills.mjs",
+    "skills:check": "node scripts/generate-skills.mjs --check"
   },
   "license": "MIT"
 }

@@ -18,3 +18,19 @@ dialog{border:1px solid var(--line);background:var(--surface);color:var(--ink);p
 @media print{.sidebar,.topbar,.workspace-footer,.toast,.inline-actions,.form-actions{display:none}.workspace{margin:0}dialog{position:static;box-shadow:none;width:100%!important;height:auto!important;max-height:none!important}dialog::backdrop{display:none}}
 .draft-output{border:1px solid var(--line);padding:20px;border-radius:12px;background:var(--bg);font:14px/1.8 ui-sans-serif,system-ui,sans-serif;max-height:440px;overflow:auto}.evidence-badge{font-size:9px;border:1px dashed var(--line);border-radius:5px;padding:5px 7px;color:var(--muted)}.open-questions{padding:17px 20px;background:var(--subtle);border-radius:12px;margin:18px 0;font-size:12px}.open-questions strong{font-size:12px}.open-questions ul{padding-left:18px;line-height:1.8;color:var(--muted);margin:8px 0}.provenance{display:block}.drawer-footer{margin-top:25px;padding-top:18px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap}.drawer-footer small{width:100%;font-size:10px}.full{width:100%;margin-top:12px}
 .direction-chips{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}.direction-chip{font-size:10px;border:1px solid var(--line);border-radius:20px;padding:9px 12px;min-height:36px;background:var(--surface)}.direction-chip:hover{background:var(--tint);border-color:var(--accent);color:var(--accent)}
+
+/* v1.1 — richer contracts stay tucked away; task journeys remain a single calm line. */
+.journey-strip{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:14px 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--subtle);font-size:10px;color:var(--muted)}
+.journey-label{font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-right:2px;color:var(--ink)}
+.journey-stage{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:var(--surface);white-space:nowrap}
+.journey-stage .icon{width:12px;height:12px}
+.journey-stage.done{color:var(--muted)}
+.journey-stage.current{border-color:var(--accent);color:var(--accent);font-weight:700}
+.journey-arrow{font-size:15px;color:var(--muted)}
+.contract-facts{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px;margin:16px 0}
+.contract-facts p{margin:0!important;padding:11px 12px;border-radius:9px;background:var(--subtle);font-size:11px!important;line-height:1.55}
+.contract-facts strong{display:block;margin-bottom:4px;font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.contract-details{margin:14px 0 18px;padding:12px;border:1px solid var(--line);border-radius:10px}
+.contract-details summary{cursor:pointer;font-size:11px}
+.contract-details[open] summary{margin-bottom:14px}
+@media(max-width:620px){.contract-facts{grid-template-columns:1fr}.journey-strip{gap:5px}.journey-label{width:100%;margin-bottom:3px}.journey-stage{font-size:9px;padding:5px 7px}}
