@@ -18,3 +18,64 @@ dialog{border:1px solid var(--line);background:var(--surface);color:var(--ink);p
 @media print{.sidebar,.topbar,.workspace-footer,.toast,.inline-actions,.form-actions{display:none}.workspace{margin:0}dialog{position:static;box-shadow:none;width:100%!important;height:auto!important;max-height:none!important}dialog::backdrop{display:none}}
 .draft-output{border:1px solid var(--line);padding:20px;border-radius:12px;background:var(--bg);font:14px/1.8 ui-sans-serif,system-ui,sans-serif;max-height:440px;overflow:auto}.evidence-badge{font-size:9px;border:1px dashed var(--line);border-radius:5px;padding:5px 7px;color:var(--muted)}.open-questions{padding:17px 20px;background:var(--subtle);border-radius:12px;margin:18px 0;font-size:12px}.open-questions strong{font-size:12px}.open-questions ul{padding-left:18px;line-height:1.8;color:var(--muted);margin:8px 0}.provenance{display:block}.drawer-footer{margin-top:25px;padding-top:18px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap}.drawer-footer small{width:100%;font-size:10px}.full{width:100%;margin-top:12px}
 .direction-chips{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}.direction-chip{font-size:10px;border:1px solid var(--line);border-radius:20px;padding:9px 12px;min-height:36px;background:var(--surface)}.direction-chip:hover{background:var(--tint);border-color:var(--accent);color:var(--accent)}
+
+
+/* Skill chat: the station stays stable while tasks and conversation move through it. */
+.skill-chat-shell{max-width:620px;margin:0 auto}
+.skill-chat-header{text-align:center;padding:18px 18px 30px;border-bottom:1px solid var(--line)}
+.skill-chat-header .skill-orb{width:88px;height:88px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 34% 30%,var(--surface),var(--tint) 58%,var(--line));box-shadow:inset 0 0 0 1px var(--line),0 14px 34px #00000010;color:var(--accent)}
+.skill-chat-header .skill-orb .icon{width:34px;height:34px}
+.skill-chat-header h3{font:600 clamp(25px,4vw,34px)/1.2 var(--heading);letter-spacing:-1px;margin:8px 0}
+.skill-chat-header p{font-size:13px;max-width:470px;margin:0 auto 14px}
+.skill-chat-header>strong{font-size:12px;font-weight:600;color:var(--ink)}
+.skill-thread{padding:26px 0 8px;display:grid;gap:24px}
+.skill-chat-task{display:grid;gap:10px}
+.chat-line{display:flex;gap:10px;align-items:flex-start}
+.chat-line.user{justify-content:flex-end}
+.chat-line.user .chat-bubble{background:var(--subtle);border-color:transparent;max-width:82%}
+.chat-line.skill .chat-bubble{background:var(--surface);max-width:86%}
+.chat-avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:0 0 30px;font-size:8px;font-weight:700;border:1px solid var(--line)}
+.user-avatar{background:var(--ink);color:var(--surface);order:2}
+.skill-avatar{background:var(--tint);color:var(--accent)}
+.skill-avatar .icon{width:15px;height:15px}
+.chat-bubble{border:1px solid var(--line);border-radius:16px;padding:13px 15px;min-width:0}
+.chat-bubble p{font-size:12px;margin:6px 0}
+.chat-bubble small{font-size:9px}
+.chat-task-title{display:block;font-size:12px;font-weight:700;text-align:left;padding:0;color:var(--ink)}
+.chat-task-title:hover{text-decoration:underline}
+.chat-bubble-actions{margin-top:7px}
+.skill-questions{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.skill-questions>span{font-size:11px;font-weight:700}
+.skill-questions ul{margin:8px 0 10px;padding-left:18px;color:var(--muted);font-size:11px;line-height:1.6}
+.mini-composer{display:flex;gap:7px}
+.mini-composer input{min-width:0;flex:1;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 11px;font-size:11px;color:var(--ink)}
+.mini-composer .secondary{min-height:38px;padding:8px 11px}
+.skill-chat-empty{border:1px dashed var(--line);border-radius:16px;text-align:center;padding:28px 24px}
+.skill-chat-empty .skill-icon{margin:0 auto 10px}
+.skill-chat-empty p{font-size:12px}
+.skill-composer{position:sticky;bottom:0;z-index:2;background:linear-gradient(180deg,transparent,var(--surface) 18%);padding:28px 0 12px;display:grid;grid-template-columns:1fr 48px;gap:8px;align-items:end}
+.skill-composer textarea{border:1px solid var(--line);background:var(--bg);border-radius:16px;padding:13px 14px;resize:vertical;min-height:50px;max-height:160px;color:var(--ink);font-size:12px;line-height:1.55}
+.skill-composer .primary{width:48px;height:48px;padding:0;border-radius:50%}
+.skill-composer>small{grid-column:1/-1;font-size:9px;text-align:center}
+.contract-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.contract-grid>div{background:var(--subtle);border-radius:10px;padding:13px}
+.contract-grid p{font-size:11px;margin:7px 0 0}
+.effect-chip{display:inline-flex;font-size:9px;font-weight:700;color:var(--accent);background:var(--tint);padding:4px 7px;border-radius:999px;margin-left:6px}
+.task-journey{border:1px solid var(--line);background:var(--subtle);border-radius:10px;padding:12px 14px;margin:0 0 18px}
+.task-journey>div{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:8px}
+.journey-step{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:650;color:var(--ink)}
+.journey-step .icon{width:12px;height:12px;color:var(--muted)}
+@media(max-width:620px){
+ .skill-chat-header{padding:8px 6px 22px}
+ .skill-chat-header .skill-orb{width:72px;height:72px}
+ .skill-chat-header h3{font-size:27px}
+ .chat-line.user .chat-bubble,.chat-line.skill .chat-bubble{max-width:90%}
+ .contract-grid{grid-template-columns:1fr}
+ .skill-composer{padding-bottom:4px}
+ .mini-composer{display:grid;grid-template-columns:1fr}
+}
+
+.routing-signals{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}
+.routing-signals span{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:9px;color:var(--muted);text-align:center}
+.routing-signals b{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+@media(max-width:620px){.routing-signals{grid-template-columns:repeat(2,1fr)}}

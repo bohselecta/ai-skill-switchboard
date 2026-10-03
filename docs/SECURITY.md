@@ -36,3 +36,19 @@ Public static builds are UI-only; there is no hosted API bridge. This project ha
 not undergone a third-party penetration test, formal accessibility audit, or
 compliance certification. Local activity entries are user-editable, not immutable
 compliance records. Close/archive is not a deletion request at a provider.
+
+## Skill chat, effects, and future delegation
+
+Opening a skill does not create a new permission principal. The conversation surface
+can create or revise tasks, but it cannot silently escalate a task from `draft` to
+an external effect.
+
+Skill manifests declare an `effectClass`, but that declaration is descriptive
+policy, not an authorization token. Current built-ins remain draft-only.
+
+This release does not spawn delegated agents. If a future host runner delegates work
+to agent runs, delegated runs must inherit the parent task's privacy and effect
+boundary, receive only bounded context/tools, and return material provenance to the
+parent task. They cannot approve themselves, acquire unrelated credentials, or turn
+into independent persistent workers without a separate product/security review.
+

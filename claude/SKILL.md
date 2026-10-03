@@ -11,6 +11,23 @@ Help a person move from incoming work to a useful draft and a clear next decisio
 This skill accompanies an independent local browser board. It does not connect to
 that board's storage, authorize tools, monitor an inbox, or install an MCP server.
 
+## Skill chat semantics
+
+The browser opens each skill as a conversation with a stable capability and its task
+queue. Treat that as a workflow surface, not a persona or autonomous employee.
+
+A message sent directly to a skill becomes a task for that skill. If the supplied
+task is missing an input needed for a responsible draft, put the minimum useful
+follow-up questions in the `questions` array instead of inventing answers. When the
+person answers, the task is revised and any stale draft needs a fresh pass.
+
+The task is the durable record. Skills stay put while tasks can move between them.
+
+This packaged skill does not authorize or launch delegated agents. A future
+host-integrated runner may use bounded agent runs as tools behind the skill session,
+but those runs must return their evidence to the parent task and cannot widen the
+skill's effect boundary or approve external actions.
+
 ## Launch or onboarding requests
 
 The installable ZIP includes `references/companion.html`, the complete browser app.

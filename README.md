@@ -6,6 +6,8 @@
 Capture a loose end, give it a skill, prepare a useful draft, and make the call.
 Not another conversation to keep track of. Not a wall of agents pretending to work.
 
+> **Tasks move. Skills stay put. Runners apply skills. People approve effects.**
+
 [![Verify](https://github.com/bohselecta/ai-skill-switchboard/actions/workflows/verify.yml/badge.svg)](https://github.com/bohselecta/ai-skill-switchboard/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-202725.svg)](LICENSE)
 
@@ -34,8 +36,10 @@ a text file. Local rules suggest one skill. Ambiguous work stays visible for you
 route rather than being confidently misclassified.
 
 **Start small, then shape the board.** Pick Everyday, Project Delivery, or Maker.
-Six skills appear immediately, with twelve built-ins and room for up to 24. Add your
-own instruction contracts, pause routing, and keep owner context close to tasks.
+Six stable skill stations appear immediately. Open one and it becomes a focused chat
+with that capability and its queue: several tasks can sit in the same skill, and a
+skill can surface follow-up questions without becoming a fake employee. The board
+holds up to 24 pinned stations while the skill library can be larger.
 
 **Prepare with the account you already use.** Copy a scoped request into your chat,
 then bring the result back. Or configure the optional local API bridge for a single
@@ -98,9 +102,12 @@ installation details. A skill bundle is not a native synchronized dashboard.
 
 ## The everyday loop
 
-**Capture → prepare → review.** An email becomes a draft reply, a meeting becomes
-checkable next steps, a loose dependency becomes a coordination brief. Copy or
-download an approved draft when ready; sending it remains a separate human action.
+**Capture → route → chat → prepare → review.** An email moves to Reply desk, a meeting
+to Meeting notes, and a loose dependency to Dependency map. Open any skill to talk
+with the capability, add another task directly to its queue, or answer a question it
+surfaced from a draft. If work needs another capability, move the same task onward;
+its journey and provenance stay attached. Copy or download an approved draft when
+ready; sending it remains a separate human action.
 
 Use **N** to capture, **/** to search, and **Escape** to close a dialog. The board stays
 spatially stable while **Next Decisions** surfaces review, routing, and blocked work.
@@ -116,13 +123,15 @@ source prompts, skill bundles, or git. The bridge uses fixed provider endpoints 
 has no autonomous tools or automatic retries.
 
 This release is a **working personal companion**, not an enterprise automation
-platform. Automatic email/Slack/webhook ingestion, semantic embeddings, native MCP
-UI, shared team queues, SSO, cloud sync, and external execution are not implemented.
+platform. The skill-chat surface is real local UI over durable task state, but it
+does not yet launch delegated agents or maintain a native provider conversation.
+Automatic email/Slack/webhook ingestion, semantic embeddings, native MCP UI, shared
+team queues, SSO, cloud sync, and external execution are not implemented.
 The source retains clear contracts for extending it rather than fake integrations.
 Local history is not an immutable compliance audit; browser storage is unencrypted.
 
-[Safety & privacy](docs/SECURITY.md) · [Contracts](docs/CONTRACTS.md) ·
-[Product decisions](docs/DECISIONS.md) · [Current status](STATUS.md) ·
+[Architecture](docs/ARCHITECTURE.md) · [Safety & privacy](docs/SECURITY.md) ·
+[Contracts](docs/CONTRACTS.md) · [Product decisions](docs/DECISIONS.md) · [Current status](STATUS.md) ·
 [Acceptance gates](docs/ACCEPTANCE.md) · [Next agent](docs/NEXT-AGENT.md)
 
 ## Verify and contribute

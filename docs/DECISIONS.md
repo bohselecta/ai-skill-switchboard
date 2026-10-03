@@ -37,3 +37,34 @@ Do not represent a README architecture diagram as an installed integration.
 README interface captures come from browser tests. Fictional walkthrough work is
 labeled in tiles, drawers, and provenance. No participant or commercial outcomes
 are claimed from software tests.
+
+**2026-09-30 — Tasks move; skills stay put.** The task is the durable work object.
+Skills are reusable capability contracts. A pinned skill is a stable station. Moving
+a task between skills preserves its journey and provenance; the board does not turn
+capabilities into synthetic employees.
+
+**2026-09-30 — Opening a skill is a conversation, not an agent profile.** A skill
+station now opens as a calm multi-task chat inspired by modern task-oriented chat
+surfaces. The user can send new work directly to the skill and see questions from
+existing drafts in context. The chat is a view over task state, not a second message
+database or autonomous identity.
+
+**2026-09-30 — Runner and delegation stay behind the skill.** ChatGPT, Claude, Gemini,
+or another runtime can apply the skill. If a later OpenAI implementation needs
+specialists, prefer manager-style agents-as-tools so the skill session keeps ownership
+of the user-facing conversation. A true handoff is reserved for intentionally
+transferring conversation ownership. Delegated runs cannot widen permissions or
+approve effects.
+
+**2026-09-30 — Twenty-four means pinned stations, not total capability.** The visible
+board remains deliberately small and learnable. A larger local skill library sits
+behind it; unpinning an unused station keeps the reusable capability available.
+
+**2026-09-30 — Explain routing; do not score it.** Local route records now preserve
+matched phrases and declared skill fit. This is evidence for why a task landed
+somewhere, not a fabricated model confidence percentage.
+
+**2026-09-30 — Effects are part of the skill contract.** Skills declare read-only,
+draft, external-mutation, financial-commitment, or destructive intent. The declaration
+is a workflow boundary, not an authority token. Current built-ins remain draft-only.
+
